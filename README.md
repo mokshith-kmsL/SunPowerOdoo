@@ -1,0 +1,2 @@
+# SunPowerOdoo
+odoo hackathon
