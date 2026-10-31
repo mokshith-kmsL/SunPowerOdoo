@@ -87,6 +87,55 @@ export const getMe = asyncHandler(async (req, res) => {
 });
 
 // ─────────────────────────────────────────────
+// POST /api/auth/register
+// Public registration for staff accounts.
+// ADMIN role is blocked — only existing admins can create admins.
+// Body: { name, email, password, role }
+// ─────────────────────────────────────────────
+export const register = asyncHandler(async (req, res) => {
+  const { name, email, password, role } = req.body;
+
+  if (!name || !email || !password) {
+    throw new AppError('Name, email, and password are required.', 400);
+  }
+
+  if (password.length < 6) {
+    throw new AppError('Password must be at least 6 characters.', 400);
+  }
+
+  // Block admin self-registration
+  const allowedRoles = ['SALES', 'TECHNICIAN', 'WAREHOUSE', 'SUPPORT'];
+  const userRole = allowedRoles.includes(role) ? role : 'SALES';
+
+  // Check if email is already in use
+  const existing = await db.query(
+    'SELECT id FROM users WHERE email = $1',
+    [email.toLowerCase().trim()]
+  );
+  if (existing.rows.length > 0) {
+    throw new AppError('A user with this email already exists.', 409);
+  }
+
+  // Hash the password before saving
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  const result = await db.query(
+    `INSERT INTO users (name, email, password_hash, role)
+     VALUES ($1, $2, $3, $4)
+     RETURNING id, name, email, role`,
+    [name.trim(), email.toLowerCase().trim(), passwordHash, userRole]
+  );
+
+  const newUser = result.rows[0];
+  const token = createToken(newUser);
+
+  sendCreated(res, 'Registration successful.', {
+    token,
+    user: newUser,
+  });
+});
+
+// ─────────────────────────────────────────────
 // POST /api/auth/users
 // Creates a new system user (staff account).
 // Only ADMIN can do this.

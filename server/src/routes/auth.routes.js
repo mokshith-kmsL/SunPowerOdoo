@@ -3,6 +3,7 @@ import authenticate from '../middleware/authenticate.js';
 import authorize    from '../middleware/authorize.js';
 import {
   login,
+  register,
   getMe,
   createUser,
   listUsers,
@@ -13,7 +14,8 @@ import {
 const router = Router();
 
 // Public routes (no login required)
-router.post('/login', login);
+router.post('/login',    login);
+router.post('/register', register);
 
 // Protected routes (must be logged in)
 router.get('/me', authenticate, getMe);

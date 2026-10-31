@@ -29,35 +29,35 @@ INSERT INTO users (name, email, password_hash, role) VALUES
 (
   'Super Admin',
   'admin@sunpower.com',
-  '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',  -- Admin@123
+  '$2a$10$IqcR7S/habI9hy9j/m8Zw.UkC/lE1uDVq37iRHiYqVb5rzPFzeIt.',  -- Admin@123
   'ADMIN'
 ),
 -- sales@sunpower.com / Sales@123
 (
   'Ravi Kumar',
   'sales@sunpower.com',
-  '$2a$10$TwBNHmA1JZRd3USjRFIlpuVB4MIV0xaS5OPl3YeAjRHHIZ2h1JV3K',  -- Sales@123
+  '$2a$10$4KjPCn57c.cgfLH82pvYwONKrbBrlNvrX4VqrV0dd1jc9UYOnqqwy',  -- Sales@123
   'SALES'
 ),
 -- tech@sunpower.com / Tech@123
 (
   'Priya Nair',
   'tech@sunpower.com',
-  '$2a$10$4qJCFifSmcQ4SQvZq0wUSO6YnJ3kAUWJaBu0N6SQ8xNqXYEyoY0zK',  -- Tech@123
+  '$2a$10$sh6lzcchpUdECMJcPQaPxOuKMr5NPChQ9yUnALdDVbbESCOoTOb.2',  -- Tech@123
   'TECHNICIAN'
 ),
 -- warehouse@sunpower.com / Ware@123
 (
   'Arun Menon',
   'warehouse@sunpower.com',
-  '$2a$10$LpwB8VXfJHd4YfVXb8lImuNVkFwkGAlHVnLQz0tELQkE2Mv3fWLAa',  -- Ware@123
+  '$2a$10$woSn6J84ajPqvnrP0peXm.FHIdM/NEpcOw.snZ/t7ZAnQfAPUQzDC',  -- Ware@123
   'WAREHOUSE'
 ),
 -- support@sunpower.com / Support@123
 (
   'Deepa Pillai',
   'support@sunpower.com',
-  '$2a$10$Rc3VJHlBxHAFzj8pQUZvkuDMLRKe3zNVGSmHGLqXP6f5y2JK9YpJ2',  -- Support@123
+  '$2a$10$n9BuwXdZrab9wU5DDRtG.e17QfQcn2FGWwnFThJMQF4j9WCYoOp7C',  -- Support@123
   'SUPPORT'
 );
 
