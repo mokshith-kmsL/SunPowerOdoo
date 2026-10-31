@@ -60,11 +60,18 @@ app.post('/api/auth/register', (req, res) => {
       });
     }
 
-    // Valid roles
-    const validRoles = ['ADMIN', 'SALES', 'TECHNICIAN', 'WAREHOUSE', 'SUPPORT'];
-    const userRole = role && validRoles.includes(role.toUpperCase()) 
-      ? role.toUpperCase() 
-      : 'SALES'; // Default to SALES
+    // Admin accounts can only be created by an existing Admin.
+    // The register endpoint is for staff — Admin is blocked here.
+    const allowedRoles = ['SALES', 'TECHNICIAN', 'WAREHOUSE', 'SUPPORT'];
+    if (role && role.toUpperCase() === 'ADMIN') {
+      return res.status(403).json({
+        success: false,
+        message: 'Admin accounts can only be created by an existing admin.'
+      });
+    }
+    const userRole = role && allowedRoles.includes(role.toUpperCase())
+      ? role.toUpperCase()
+      : 'SALES';
 
     // Create new user
     const newUser = {
