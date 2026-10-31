@@ -5,11 +5,20 @@ import './App.css';
 const API_URL = 'http://localhost:5000/api';
 
 function App() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [isLogin, setIsLogin] = useState(true);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    role: 'SALES'
+  });
   const [error, setError] = useState('');
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,8 +27,8 @@ function App() {
 
     try {
       const response = await axios.post(`${API_URL}/auth/login`, {
-        email,
-        password,
+        email: formData.email,
+        password: formData.password,
       });
 
       const { token, user } = response.data.data;
@@ -33,11 +42,40 @@ function App() {
     }
   };
 
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await axios.post(`${API_URL}/auth/register`, {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role
+      });
+
+      const { token, user } = response.data.data;
+      localStorage.setItem('token', token);
+      setUser(user);
+
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     setUser(null);
-    setEmail('');
-    setPassword('');
+    setFormData({ name: '', email: '', password: '', role: 'SALES' });
+  };
+
+  const toggleMode = () => {
+    setIsLogin(!isLogin);
+    setError('');
+    setFormData({ name: '', email: '', password: '', role: 'SALES' });
   };
 
   if (user) {
@@ -112,45 +150,133 @@ function App() {
             <p>Solar Installation Management System</p>
           </div>
 
-          <form onSubmit={handleLogin}>
-            <div className="form-group">
-              <label>Email Address</label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                required
-              />
-            </div>
-
-            {error && (
-              <div className="alert-error">
-                {error}
-              </div>
-            )}
-
-            <button type="submit" disabled={loading} className="btn-primary">
-              {loading ? 'Signing in...' : 'Sign In'}
+          <div className="tabs">
+            <button 
+              className={isLogin ? 'tab active' : 'tab'}
+              onClick={() => setIsLogin(true)}
+            >
+              Login
             </button>
-          </form>
-
-          <div className="demo-info">
-            <p className="demo-label">Demo Credentials</p>
-            <p>admin@sunpower.com / Admin@123</p>
-            <p>sales@sunpower.com / Sales@123</p>
+            <button 
+              className={!isLogin ? 'tab active' : 'tab'}
+              onClick={() => setIsLogin(false)}
+            >
+              Sign Up
+            </button>
           </div>
+
+          {isLogin ? (
+            <form onSubmit={handleLogin}>
+              <div className="form-group">
+                <label>Email Address</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                  required
+                />
+              </div>
+
+              {error && (
+                <div className="alert-error">
+                  {error}
+                </div>
+              )}
+
+              <button type="submit" disabled={loading} className="btn-primary">
+                {loading ? 'Signing in...' : 'Sign In'}
+              </button>
+
+              <div className="demo-info">
+                <p className="demo-label">Demo Credentials</p>
+                <p>admin@sunpower.com / admin123</p>
+                <p>sales@sunpower.com / sales123</p>
+              </div>
+            </form>
+          ) : (
+            <form onSubmit={handleSignup}>
+              <div className="form-group">
+                <label>Full Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Enter your name"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Email Address</label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="At least 6 characters"
+                  required
+                  minLength={6}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Role</label>
+                <select 
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  className="select-input"
+                >
+                  <option value="SALES">Sales</option>
+                  <option value="TECHNICIAN">Technician</option>
+                  <option value="WAREHOUSE">Warehouse</option>
+                  <option value="SUPPORT">Support</option>
+                  <option value="ADMIN">Admin</option>
+                </select>
+              </div>
+
+              {error && (
+                <div className="alert-error">
+                  {error}
+                </div>
+              )}
+
+              <button type="submit" disabled={loading} className="btn-primary">
+                {loading ? 'Creating account...' : 'Create Account'}
+              </button>
+
+              <div className="demo-info">
+                <p>Anyone can create an account for demo purposes</p>
+              </div>
+            </form>
+          )}
         </div>
       </div>
     </div>
