@@ -50,7 +50,7 @@ export const login = asyncHandler(async (req, res) => {
   }
 
   if (!user.is_active) {
-    throw new AppError('Your account has been deactivated. Contact admin.', 403);
+    throw new AppError('Your account is pending admin approval. Please contact an administrator.', 403);
   }
 
   const token = createToken(user);
@@ -88,12 +88,14 @@ export const getMe = asyncHandler(async (req, res) => {
 
 // ─────────────────────────────────────────────
 // POST /api/auth/register
-// Public registration for staff accounts.
-// ADMIN role is blocked — only existing admins can create admins.
-// Body: { name, email, password, role }
+// Public registration.
+// - CUSTOMER role: auto-active, creates linked customer record
+// - Employee roles (SALES, TECHNICIAN, WAREHOUSE, SUPPORT): inactive until admin approves
+// - ADMIN role: blocked from self-registration
+// Body: { name, email, password, role, phone }
 // ─────────────────────────────────────────────
 export const register = asyncHandler(async (req, res) => {
-  const { name, email, password, role } = req.body;
+  const { name, email, password, role, phone } = req.body;
 
   if (!name || !email || !password) {
     throw new AppError('Name, email, and password are required.', 400);
@@ -103,36 +105,67 @@ export const register = asyncHandler(async (req, res) => {
     throw new AppError('Password must be at least 6 characters.', 400);
   }
 
-  // Block admin self-registration
-  const allowedRoles = ['SALES', 'TECHNICIAN', 'WAREHOUSE', 'SUPPORT'];
-  const userRole = allowedRoles.includes(role) ? role : 'SALES';
+  const cleanEmail = email.toLowerCase().trim();
 
   // Check if email is already in use
   const existing = await db.query(
     'SELECT id FROM users WHERE email = $1',
-    [email.toLowerCase().trim()]
+    [cleanEmail]
   );
   if (existing.rows.length > 0) {
     throw new AppError('A user with this email already exists.', 409);
   }
 
-  // Hash the password before saving
+  // Hash the password
   const passwordHash = await bcrypt.hash(password, 10);
 
+  // Determine role and whether the account needs admin approval
+  const employeeRoles = ['SALES', 'TECHNICIAN', 'WAREHOUSE', 'SUPPORT'];
+  const isCustomer = role === 'CUSTOMER';
+  const userRole = isCustomer ? 'CUSTOMER' : (employeeRoles.includes(role) ? role : 'SALES');
+  const isActive = isCustomer; // customers are active immediately, employees need approval
+
+  // Create the user
   const result = await db.query(
-    `INSERT INTO users (name, email, password_hash, role)
-     VALUES ($1, $2, $3, $4)
-     RETURNING id, name, email, role`,
-    [name.trim(), email.toLowerCase().trim(), passwordHash, userRole]
+    `INSERT INTO users (name, email, password_hash, role, is_active)
+     VALUES ($1, $2, $3, $4, $5)
+     RETURNING id, name, email, role, is_active`,
+    [name.trim(), cleanEmail, passwordHash, userRole, isActive]
   );
 
   const newUser = result.rows[0];
-  const token = createToken(newUser);
 
-  sendCreated(res, 'Registration successful.', {
-    token,
-    user: newUser,
-  });
+  // If TECHNICIAN, also create a technicians record so they appear in the technician list
+  if (userRole === 'TECHNICIAN') {
+    await db.query(
+      `INSERT INTO technicians (user_id, phone, specialization)
+       VALUES ($1, $2, $3)`,
+      [newUser.id, phone || null, null]
+    );
+  }
+
+  // If CUSTOMER, also create a customers record linked to this user
+  if (isCustomer) {
+    await db.query(
+      `INSERT INTO customers (name, phone, email, user_id)
+       VALUES ($1, $2, $3, $4)`,
+      [name.trim(), phone || 'N/A', cleanEmail, newUser.id]
+    );
+  }
+
+  // Customers get a token and can log in immediately.
+  // Employees get a "pending approval" message instead.
+  if (isCustomer) {
+    const token = createToken(newUser);
+    sendCreated(res, 'Registration successful.', {
+      token,
+      user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role },
+    });
+  } else {
+    sendCreated(res, 'Account created. An administrator must approve your account before you can log in.', {
+      user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role, is_active: false },
+    });
+  }
 });
 
 // ─────────────────────────────────────────────

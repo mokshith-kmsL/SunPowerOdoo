@@ -48,7 +48,7 @@ DROP TYPE IF EXISTS subsidy_status        CASCADE;
 DROP TYPE IF EXISTS product_category      CASCADE;
 
 -- ─── Enum Types ─────────────────────────────────────────────
-CREATE TYPE user_role AS ENUM ('ADMIN', 'SALES', 'TECHNICIAN', 'WAREHOUSE', 'SUPPORT');
+CREATE TYPE user_role AS ENUM ('ADMIN', 'SALES', 'TECHNICIAN', 'WAREHOUSE', 'SUPPORT', 'CUSTOMER');
 
 CREATE TYPE system_type AS ENUM ('ON_GRID', 'OFF_GRID');
 
@@ -116,6 +116,7 @@ CREATE TABLE customers (
   phone       VARCHAR(20)   NOT NULL,
   email       VARCHAR(200),
   address     TEXT,
+  user_id     INT           REFERENCES users(id) ON DELETE SET NULL,
   created_at  TIMESTAMPTZ   NOT NULL DEFAULT NOW(),
   updated_at  TIMESTAMPTZ   NOT NULL DEFAULT NOW()
 );

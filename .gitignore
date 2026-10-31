@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Build output
+client/dist/
+
+# Environment files (never commit secrets)
+server/.env
+server/users.json
+
+# Test/backup files
+server/test-server.js.bak
+server/database/testdata.sql
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
