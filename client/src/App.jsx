@@ -58,11 +58,46 @@ function App() {
         </div>
 
         <div className="welcome-card">
+          <div className="welcome-icon">👋</div>
           <h2>Welcome, {user.name}!</h2>
-          <p>Email: {user.email}</p>
-          <p>Role: <span className="role-badge">{user.role}</span></p>
-          <p className="success-message">✅ Authentication successful!</p>
-          <p className="info">Backend API is working correctly.</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>Role:</strong> <span className="role-badge">{user.role}</span></p>
+          
+          <div className="success-message">
+            ✅ Authentication successful!
+          </div>
+          
+          <div className="info-box">
+            <p className="info-title">🔒 JWT Authentication Active</p>
+            <p className="info-text">Your session token is securely stored and will be sent with all API requests.</p>
+          </div>
+
+          <div className="features-grid">
+            <div className="feature-card">
+              <div className="feature-icon">👥</div>
+              <div className="feature-text">Customer Management</div>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">📋</div>
+              <div className="feature-text">Lead Tracking</div>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">💰</div>
+              <div className="feature-text">Quotations & Orders</div>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">📦</div>
+              <div className="feature-text">Inventory & Dispatch</div>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">🔧</div>
+              <div className="feature-text">Installations</div>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">🛡️</div>
+              <div className="feature-text">Warranty Management</div>
+            </div>
+          </div>
         </div>
       </div>
     );

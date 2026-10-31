@@ -167,40 +167,100 @@ body {
   margin: 0 auto;
 }
 
+.welcome-icon {
+  font-size: 4rem;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
 .welcome-card h2 {
   color: #333;
-  margin-bottom: 16px;
-  font-size: 1.8rem;
+  margin-bottom: 24px;
+  font-size: 2rem;
+  text-align: center;
 }
 
 .welcome-card p {
   color: #666;
-  margin-bottom: 8px;
-  font-size: 1.1rem;
+  margin-bottom: 12px;
+  font-size: 1.05rem;
+}
+
+.welcome-card p strong {
+  color: #333;
 }
 
 .role-badge {
   display: inline-block;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 4px 12px;
-  border-radius: 16px;
-  font-size: 0.9rem;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.95rem;
   font-weight: 600;
+  margin-left: 8px;
 }
 
 .success-message {
-  margin-top: 24px;
+  margin-top: 32px;
   padding: 16px;
   background: #e8f5e9;
   color: #2e7d32;
   border-radius: 8px;
   border-left: 4px solid #4caf50;
   font-weight: 600;
+  text-align: center;
 }
 
-.info {
-  margin-top: 12px;
+.info-box {
+  margin-top: 24px;
+  padding: 20px;
+  background: #f0f4ff;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.info-title {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.info-text {
   color: #666;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.feature-card {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: default;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.feature-text {
+  color: #333;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
