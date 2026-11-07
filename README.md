@@ -2,7 +2,6 @@
 
 A complete ERP system for managing solar panel installations from lead to warranty.
 
-## 🚀 Quick Start (Demo for Jury)
 
 ### 1. Start the Backend API
 ```bash
@@ -245,7 +244,7 @@ odoo/
 
 ---
 
-## 🏆 What Makes This Special
+## 🏆 Why us?
 
 1. **Complete Business Logic** - Not just CRUD, but real workflows
 2. **Auto-Calculations** - Prices, taxes, warranties calculated server-side
@@ -254,29 +253,4 @@ odoo/
 5. **Readable Code** - Every function has comments explaining what it does
 6. **Production-Ready** - Error handling, validation, proper HTTP status codes
 
----
-
-## 👥 Team
-
-Built for Odoo Hackathon 2024
-
----
-
-## 📞 Demo Notes for Jury
-
-**Backend is fully functional!** All 18 API modules work.
-
-**What you can test:**
-1. Login works ✅
-2. All API endpoints respond ✅
-3. Database has sample data ✅
-4. Authentication is secure ✅
-
-**What we would add with more time:**
-- Full React dashboard with all features
-- Data tables for customers, leads, orders
-- Charts for analytics
-- Installation photo upload UI
-- PDF generation for quotations
-
-But the **backend is 100% complete** and production-ready!
+--
